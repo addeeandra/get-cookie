@@ -14,6 +14,22 @@ def retrieve_cookies(url: str) -> str:
     return "; ".join(f"{c['name']}={c['value']}" for c in cookies)
 
 
+def walk_once(url: str, actions: list[dict]) -> str:
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url, wait_until="networkidle")
+
+        for act in actions:
+            page.wait_for_timeout(int(act.get("value", 1000)))
+
+        cookies = context.cookies()
+        browser.close()
+
+    return "; ".join(f"{c['name']}={c['value']}" for c in cookies)
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("usage: retriever.py <url>", file=sys.stderr)

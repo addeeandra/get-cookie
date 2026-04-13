@@ -29,6 +29,22 @@ curl -X POST http://localhost:8000/cookies \
   -d '{"url": "https://example.com"}'
 ```
 
+Optionally pass `actions` to wait before collecting cookies (e.g. for JS-rendered cookies or bot challenges):
+
+```bash
+curl -X POST http://localhost:8000/cookies \
+  -H "Authorization: Bearer your-secret" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com",
+    "actions": [
+      {"action": "wait", "value": 5000}
+    ]
+  }'
+```
+
+`value` is the wait duration in milliseconds (defaults to 1000).
+
 Response:
 
 ```json
